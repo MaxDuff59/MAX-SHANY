@@ -1,0 +1,31 @@
+# ---- Secrets ----
+.env
+.env.local
+backend/.env
+frontend/.env
+
+# ---- Backend (Python / uv) ----
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+# uv.lock est volontairement suivi par git (versions figées) — ne pas l'ignorer
+
+# ---- Frontend (Node / Vite) ----
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# ---- Éditeurs / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+npm-debug.log*
