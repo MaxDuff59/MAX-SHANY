@@ -16,9 +16,11 @@ app = FastAPI(title="Max & Shany API")
 
 frontend_origin = os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173")
 
+# Autorise localhost et les adresses du réseau local (téléphone en WiFi) sur le port de dev.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[frontend_origin, "http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
