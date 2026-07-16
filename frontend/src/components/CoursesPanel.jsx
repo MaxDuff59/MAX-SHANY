@@ -29,7 +29,7 @@ export default function CoursesPanel() {
 
   async function handleToggle(item) {
     setItems((prev) =>
-      prev.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i))
+      prev.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)),
     );
     try {
       await updateCourse(item.id, { checked: !item.checked });
@@ -48,6 +48,9 @@ export default function CoursesPanel() {
   }
 
   const remaining = items.filter((i) => !i.checked).length;
+  const ordered = [...items].sort(
+    (a, b) => Number(a.checked) - Number(b.checked),
+  );
 
   return (
     <section className="panel panel--courses">
@@ -72,10 +75,12 @@ export default function CoursesPanel() {
       {loading ? (
         <p className="panel__empty">Chargement…</p>
       ) : items.length === 0 ? (
-        <p className="panel__empty">La liste est vide. Ajoutez le premier article.</p>
+        <p className="panel__empty">
+          La liste est vide. Ajoutez le premier article.
+        </p>
       ) : (
         <ul className="panel__list">
-          {items.map((item) => (
+          {ordered.map((item) => (
             <li key={item.id} className={item.checked ? "is-checked" : ""}>
               <label>
                 <input
