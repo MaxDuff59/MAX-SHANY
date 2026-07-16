@@ -7,11 +7,43 @@ const PRIORITIES = [
   { value: "haute", label: "Haute" },
 ];
 
+// Les couleurs de chaque prénom viennent de la LoadingPage (or / turquoise).
+const PEOPLE = [
+  { value: "max", label: "Max" },
+  { value: "shany", label: "Shany" },
+];
+
+const toggleIn = (list, who) =>
+  list.includes(who) ? list.filter((w) => w !== who) : [...list, who];
+
+function AssigneeChips({ value, onToggle }) {
+  return (
+    <span className="panel__who-group">
+      {PEOPLE.map((p) => {
+        const on = value.includes(p.value);
+        return (
+          <button
+            key={p.value}
+            type="button"
+            className={`panel__who panel__who--${p.value}${on ? " is-on" : ""}`}
+            aria-pressed={on}
+            aria-label={`${p.label} : ${on ? "assigné" : "non assigné"}`}
+            onClick={() => onToggle(p.value)}
+          >
+            {p.label}
+          </button>
+        );
+      })}
+    </span>
+  );
+}
+
 export default function TodoPanel() {
   const [items, setItems] = useState([]);
   const [text, setText] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState("normale");
+  const [assignees, setAssignees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,10 +62,12 @@ export default function TodoPanel() {
       text: value,
       due_date: dueDate || null,
       priority,
+      assignees,
     };
     setText("");
     setDueDate("");
     setPriority("normale");
+    setAssignees([]);
     try {
       const created = await addTodo(payload);
       setItems((prev) => [...prev, created]);
@@ -48,6 +82,18 @@ export default function TodoPanel() {
     );
     try {
       await updateTodo(item.id, { done: !item.done });
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
+  async function handleAssign(item, who) {
+    const next = toggleIn(item.assignees ?? [], who);
+    setItems((prev) =>
+      prev.map((i) => (i.id === item.id ? { ...i, assignees: next } : i))
+    );
+    try {
+      await updateTodo(item.id, { assignees: next });
     } catch (e) {
       setError(e.message);
     }
@@ -100,6 +146,13 @@ export default function TodoPanel() {
           </select>
           <button type="submit">Ajouter</button>
         </div>
+        <div className="panel__form-who">
+          <span className="panel__form-who-label">Pour</span>
+          <AssigneeChips
+            value={assignees}
+            onToggle={(who) => setAssignees((prev) => toggleIn(prev, who))}
+          />
+        </div>
       </form>
 
       {error && <p className="panel__error">{error}</p>}
@@ -129,6 +182,11 @@ export default function TodoPanel() {
                   </span>
                 </span>
               </label>
+              {/* Hors du <label> : sinon un clic sur une pastille cocherait la tâche. */}
+              <AssigneeChips
+                value={item.assignees ?? []}
+                onToggle={(who) => handleAssign(item, who)}
+              />
               <button
                 className="panel__delete"
                 onClick={() => handleDelete(item.id)}

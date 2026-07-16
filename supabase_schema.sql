@@ -11,13 +11,15 @@ create table if not exists courses (
   created_at timestamptz not null default now()
 );
 
--- Table Todos (à faire, avec date et priorité)
+-- Table Todos (à faire, avec date, priorité et qui s'en occupe)
 create table if not exists todos (
   id uuid primary key default gen_random_uuid(),
   text text not null,
   done boolean not null default false,
   due_date date,
   priority text not null default 'normale' check (priority in ('basse', 'normale', 'haute')),
+  -- Qui fait la tâche : {} (personne), {max}, {shany} ou {max,shany}.
+  assignees text[] not null default '{}' check (assignees <@ array['max', 'shany']::text[]),
   created_at timestamptz not null default now()
 );
 

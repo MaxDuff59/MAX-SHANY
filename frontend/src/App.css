@@ -267,6 +267,73 @@
   background: var(--rose);
 }
 
+/* ---- Qui fait la tâche ---- */
+
+/* Forme en gélule, pour ne pas confondre avec les badges de priorité,
+   qui sont rectangulaires. Creuse = non assigné, pleine = assigné. */
+.panel__who-group {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.panel__who {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.panel__who:hover {
+  opacity: 0.75;
+}
+
+.panel__who.is-on {
+  opacity: 1;
+  color: var(--paper);
+}
+
+.panel__who--max {
+  color: var(--gold-dark);
+}
+
+.panel__who--max.is-on {
+  background: var(--gold-dark);
+}
+
+.panel__who--shany {
+  color: var(--teal-dark);
+}
+
+.panel__who--shany.is-on {
+  background: var(--teal-dark);
+}
+
+.panel__form-who {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.panel__form-who-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+}
+
+.panel__form-who .panel__who-group {
+  margin-left: 0;
+}
+
 .panel__delete {
   border: none;
   background: transparent;
